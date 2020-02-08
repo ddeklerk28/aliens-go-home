@@ -10,6 +10,14 @@ class App extends Component {
     setInterval(() => {
       self.props.moveObjects(self.canvasMousePosition);
     }, 10);
+    
+    window.onresize = () => {
+      const cnv = document.querySelector('#aliens-go-home-canvas');
+      cnv.style.width = `${window.innerWidth}px`;
+      cnv.style.height = `${window.innerHeight}px`;
+    };
+    
+    window.onresize();
   }
   
   trackMouse(event) {
@@ -20,6 +28,8 @@ class App extends Component {
     return (
         <Canvas
           angle={this.props.angle}
+          gameState={this.props.gameState}
+          startGame={this.props.startGame}
           trackMouse={(event) => (this.trackMouse(event))}
         />
     );
@@ -28,7 +38,20 @@ class App extends Component {
 
 App.propTypes = {
   angle: PropTypes.number.isRequired,
-  moveObject: PropTypes.func.isRequired,
+  gameState: PropTypes.shape({
+    started: PropTypes.bool.isRequired,
+    kills: PropTypes.number.isRequired,
+    lives: PropTypes.number.isRequired,
+    flyingObjects: PropTypes.arrayOf(PropTypes.shape({
+      position: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+      }).isRequired,
+      id: PropTypes.number.isRequired,
+    })).isRequired,
+  }).isRequired,
+  moveObjects: PropTypes.func.isRequired,
+  startGame: PropTypes.func.isRequired,
 };
 
 export default App;
